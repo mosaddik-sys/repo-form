@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NovaStock — Enrollment Confirmed</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500&family=Share+Tech+Mono&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #020408; --surface: #05090f; --panel: #080e18;
+      --border: #0f2a3f; --border-hi: #1a4a6e;
+      --cyan: #00d4ff; --cyan-dim: #004a5c; --cyan-soft: rgba(0,212,255,0.06);
+      --teal: #00ffcc; --text: #c8dde8; --text-2: #4a7a90; --text-3: #234055; --white: #e8f4f8;
+    }
+
+    html, body {
+      height: 100%; width: 100%;
+      overflow: hidden;
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    /* grid */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      animation: gridShift 20s linear infinite;
+      pointer-events: none; z-index: 0;
+    }
+    @keyframes gridShift { 100% { background-position: 48px 48px; } }
+
+    /* glow */
+    body::after {
+      content: '';
+      position: fixed; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(0,212,255,0.05) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    /* particles */
+    .particle { position:fixed; width:2px; height:2px; background:var(--cyan); border-radius:50%; opacity:0; animation:float var(--dur,8s) var(--delay,0s) linear infinite; pointer-events:none; z-index:0; }
+    @keyframes float { 0%{transform:translateY(100vh);opacity:0;} 10%{opacity:.5;} 90%{opacity:.2;} 100%{transform:translateY(-10vh) translateX(var(--drift,20px));opacity:0;} }
+
+    /* wrapper */
+    .wrapper {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 600px;
+      padding: 20px 16px;
+      display: flex; flex-direction: column; gap: 14px;
+    }
+
+    /* top bar */
+    .top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 16px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      position: relative;
+      animation: fadeDown 0.5s cubic-bezier(.22,1,.36,1) both;
+    }
+    .top-bar::before { content:''; position:absolute; top:-1px; left:-1px; width:10px; height:10px; border:2px solid var(--cyan); border-width:2px 0 0 2px; }
+    .top-bar::after  { content:''; position:absolute; top:-1px; right:-1px; width:10px; height:10px; border:2px solid var(--cyan); border-width:2px 2px 0 0; }
+
+    .logo-wrap { display:flex; align-items:center; gap:10px; }
+    .logo-icon { width:32px; height:32px; border:1px solid var(--cyan-dim); display:flex; align-items:center; justify-content:center; background:var(--cyan-soft); }
+    .logo-icon::before { content:'N'; font-family:'Orbitron',monospace; font-size:14px; font-weight:900; color:var(--cyan); text-shadow:0 0 10px var(--cyan); }
+    .logo-name { font-family:'Orbitron',monospace; font-size:12px; font-weight:700; color:var(--white); letter-spacing:.1em; display:block; }
+    .logo-sub  { font-size:9px; color:var(--text-2); letter-spacing:.15em; text-transform:uppercase; display:block; }
+
+    .status-dot { display:flex; align-items:center; gap:6px; font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--teal); }
+    .status-dot::before { content:''; width:5px; height:5px; background:var(--teal); border-radius:50%; box-shadow:0 0 6px var(--teal); animation:pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
+    /* main panel */
+    .confirm-panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      padding: 36px 40px 32px;
+      position: relative;
+      text-align: center;
+      animation: fadeUp 0.7s 0.1s cubic-bezier(.22,1,.36,1) both;
+    }
+    .confirm-panel::before { content:''; position:absolute; top:-1px; left:-1px; width:16px; height:16px; border:2px solid var(--cyan); border-width:2px 0 0 2px; }
+    .confirm-panel::after  { content:''; position:absolute; top:-1px; right:-1px; width:16px; height:16px; border:2px solid var(--cyan); border-width:2px 2px 0 0; }
+    .confirm-panel .bc::before { content:''; position:absolute; bottom:-1px; left:-1px; width:16px; height:16px; border:2px solid var(--border-hi); border-width:0 0 2px 2px; }
+    .confirm-panel .bc::after  { content:''; position:absolute; bottom:-1px; right:-1px; width:16px; height:16px; border:2px solid var(--border-hi); border-width:0 2px 2px 0; }
+
+    /* icon */
+    .success-icon {
+      width: 64px; height: 64px;
+      border: 1px solid var(--cyan-dim);
+      display: flex; align-items: center; justify-content: center;
+      background: var(--cyan-soft);
+      margin: 0 auto 20px;
+      animation: iconPop 0.5s 0.3s cubic-bezier(.22,1,.36,1) both;
+    }
+    @keyframes iconPop { from{opacity:0;transform:scale(.6);} to{opacity:1;transform:scale(1);} }
+    .check-svg { width:28px; height:28px; stroke:var(--cyan); stroke-width:2.5; fill:none; stroke-linecap:round; stroke-linejoin:round; filter:drop-shadow(0 0 7px var(--cyan)); }
+    .check-path { stroke-dasharray:55; stroke-dashoffset:55; animation:drawCheck .6s .7s ease forwards; }
+    @keyframes drawCheck { to { stroke-dashoffset: 0; } }
+
+    .confirm-tag { font-family:'Share Tech Mono',monospace; font-size:10px; color:var(--cyan); letter-spacing:.2em; margin-bottom:12px; }
+
+    .confirm-title {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(18px, 3vw, 26px);
+      font-weight: 700;
+      color: var(--white);
+      letter-spacing: .04em;
+      line-height: 1.2;
+      text-shadow: 0 0 30px rgba(0,212,255,.2);
+      margin-bottom: 14px;
+    }
+    .confirm-title span { color: var(--cyan); }
+
+    .confirm-sub {
+      font-size: 13px;
+      color: var(--text-2);
+      line-height: 1.75;
+      max-width: 440px;
+      margin: 0 auto 24px;
+    }
+
+    /* 3 steps inline */
+    .steps {
+      display: flex; gap: 10px;
+      margin-bottom: 28px;
+      text-align: left;
+    }
+    .step {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 14px 12px;
+    }
+    .step-num  { font-family:'Orbitron',monospace; font-size:16px; font-weight:900; color:var(--cyan); opacity:.25; margin-bottom:4px; }
+    .step-head { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--white); letter-spacing:.1em; margin-bottom:4px; }
+    .step-desc { font-size:11px; color:var(--text-2); line-height:1.5; }
+
+    /* back btn */
+    .back-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 12px 28px;
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      font-family: 'Orbitron', monospace;
+      font-size: 11px; font-weight: 600;
+      letter-spacing: .15em; text-decoration: none; text-transform: uppercase;
+      position: relative; overflow: hidden;
+      transition: color .3s, box-shadow .3s;
+    }
+    .back-btn::before { content:''; position:absolute; inset:0; background:var(--cyan); transform:scaleX(0); transform-origin:left; transition:transform .4s cubic-bezier(.22,1,.36,1); }
+    .back-btn:hover::before { transform:scaleX(1); }
+    .back-btn:hover { color:var(--bg); box-shadow:0 0 32px rgba(0,212,255,.3); }
+    .back-btn span { position:relative; z-index:1; }
+
+    /* footer */
+    .footer-bar { display:flex; align-items:center; justify-content:space-between; padding:0 4px; animation:fadeUp .7s .4s cubic-bezier(.22,1,.36,1) both; }
+    .footer-txt { font-family:'Share Tech Mono',monospace; font-size:9px; color:var(--text-3); letter-spacing:.1em; }
+    .footer-txt.l::before { content:'⬡ '; color:var(--teal); }
+
+    @keyframes fadeUp   { from{opacity:0;transform:translateY(14px);} to{opacity:1;transform:translateY(0);} }
+    @keyframes fadeDown { from{opacity:0;transform:translateY(-10px);} to{opacity:1;transform:translateY(0);} }
+
+    @media (max-width:500px) {
+      .steps { flex-direction: column; }
+      .confirm-panel { padding: 28px 20px 24px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="particle" style="left:8%;--dur:9s;--delay:0s;--drift:20px"></div>
+<div class="particle" style="left:55%;--dur:12s;--delay:1.5s;--drift:-25px"></div>
+<div class="particle" style="left:88%;--dur:8s;--delay:3s;--drift:15px"></div>
+
+<div class="wrapper">
+
+  <header class="top-bar">
+    <div class="logo-wrap">
+      <div class="logo-icon"></div>
+      <div>
+        <span class="logo-name">NOVASTOCK</span>
+        <span class="logo-sub">Resource Agency</span>
+      </div>
+    </div>
+    <span class="status-dot">TRANSMISSION CONFIRMED</span>
+  </header>
+
+  <div class="confirm-panel">
+    <div class="bc" style="position:absolute;inset:0;pointer-events:none;"></div>
+
+    <div class="success-icon">
+      <svg class="check-svg" viewBox="0 0 36 36">
+        <path class="check-path" d="M6 18 L14 26 L30 10"/>
+      </svg>
+    </div>
+
+    <div class="confirm-tag">// ENROLLMENT STATUS — ACCEPTED</div>
+    <h1 class="confirm-title">REQUEST <span>TRANSMITTED</span><br>SUCCESSFULLY</h1>
+    <p class="confirm-sub">Your enrollment has been received and logged into the NovaStock system. Our specialists will contact you within 24 hours to architect your personalized skill development pathway.</p>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-head">CHECK EMAIL</div>
+        <div class="step-desc">A confirmation has been dispatched to your registered address.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-head">AWAIT CONTACT</div>
+        <div class="step-desc">A specialist will reach out within 24 hours.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-head">BEGIN PROTOCOL</div>
+        <div class="step-desc">Your skill development program will be initialized.</div>
+      </div>
+    </div>
+
+     <a href="index.html" class="back-btn">
+      <span>← RETURN TO TERMINAL</span>
+    </a>
+  </div>
+
+  <div class="footer-bar">
+    <span class="footer-txt l">END-TO-END ENCRYPTED — DATA PROTOCOL v3.1</span>
+    <span class="footer-txt">© 2026 NOVASTOCK RESOURCE AGENCY</span>
+  </div>
+
+</div>
+</body>
+</html>
